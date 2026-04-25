@@ -145,77 +145,38 @@
       transform: rotate(-45deg) translate(6px, -6px);
     }
 
-     /* ── SPLASH ── */
-    body.splash-active { overflow: hidden; }
+<script>
+  const splash = document.getElementById('splash');
+  const video = splash.querySelector('video');
 
-    #splash {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: #000;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      padding-bottom: max(clamp(36px, 8vh, 80px), env(safe-area-inset-bottom, 0px) + 36px);
-      cursor: pointer;
-      height: 100dvh;
-      height: 100vh;
-    }
-    @supports (height: 100dvh) {
-      #splash { height: 100dvh; }
-    }
-    #splash.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-    #splash video {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center center;
-      pointer-events: none;
-      min-width: 100%;
-      min-height: 100%;
-    }
-    #splash::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 55%;
-      background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
-      pointer-events: none;
-      z-index: 1;
-    }
-    .splash-content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      padding: 0 clamp(20px, 8vw, 60px);
-      pointer-events: none;
-      width: 100%;
-      max-width: 600px;
-    }
-    .splash-divider {
-      display: flex;
-      align-items: center;
-      gap: clamp(8px, 3vw, 14px);
-      justify-content: center;
-      margin: clamp(10px, 2.5vh, 18px) auto 0;
-      opacity: 0;
-      animation: fadeIn 1s 1.2s ease forwards;
-    }
-    .splash-divider span {
-      width: clamp(24px, 7vw, 50px);
-      height: 1px;
-      background: var(--primary);
-      display: block;
-      opacity: 0.8;
-    }
-    .splash-divider i { color: var(--primary); font-style: normal; font-size: 9px; }
+  // Minimum splash duration (4 seconds)
+  const MIN_DURATION = 4000;
 
+  let startTime = Date.now();
+
+  function hideSplash() {
+    splash.classList.add('hidden');
+    document.body.classList.remove('splash-active');
+  }
+
+  function tryHideSplash() {
+    const elapsed = Date.now() - startTime;
+    const remaining = MIN_DURATION - elapsed;
+
+    if (remaining > 0) {
+      setTimeout(hideSplash, remaining);
+    } else {
+      hideSplash();
+    }
+  }
+
+  // When video ends OR user clicks → respect minimum time
+  video.addEventListener('ended', tryHideSplash);
+  splash.addEventListener('click', tryHideSplash);
+
+  // Fallback: if video is shorter or doesn't fire properly
+  setTimeout(tryHideSplash, MIN_DURATION);
+</script>
     
 
     /* ── MODERN MINIMALIST MUSIC BUTTON ── */
