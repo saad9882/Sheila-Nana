@@ -13,6 +13,7 @@
       --primary-soft: #C1E9D9;  /* mint green */
       --bg:           #FEF1F0;  /* very light blush */
       --bg-alt:       #E2EEDB;  /* light sage */
+      --accent:       #FFDAE1;  /* soft pink */
       --accent-strong:#FBC1CE;  /* rose pink */
 
       /* Text colors for readability */
@@ -144,10 +145,30 @@
       transform: rotate(-45deg) translate(6px, -6px);
     }
 
-    /* ── SPLASH ── */
+     /* ── SPLASH ── */
     body.splash-active { overflow: hidden; }
 
-    
+    #splash {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #000;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: max(clamp(36px, 8vh, 80px), env(safe-area-inset-bottom, 0px) + 36px);
+      cursor: pointer;
+      height: 100dvh;
+      height: 100vh;
+    }
+    @supports (height: 100dvh) {
+      #splash { height: 100dvh; }
+    }
+    #splash.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
     #splash video {
       position: absolute;
       inset: 0;
@@ -156,57 +177,46 @@
       object-fit: cover;
       object-position: center center;
       pointer-events: none;
-      opacity: 0;
-      transition: opacity 3s ease;
+      min-width: 100%;
+      min-height: 100%;
     }
-    
-    #splash video.loaded {
-      opacity: 1;
+    #splash::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 55%;
+      background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+      pointer-events: none;
+      z-index: 1;
     }
-    
     .splash-content {
       position: relative;
       z-index: 2;
       text-align: center;
       padding: 0 clamp(20px, 8vw, 60px);
-      color: var(--white);
+      pointer-events: none;
+      width: 100%;
+      max-width: 600px;
     }
-    
-    .splash-names {
-      font-family: 'Bodoni Moda', serif;
-      font-size: clamp(48px, 10vw, 90px);
-      font-weight: 400;
-      letter-spacing: 0.08em;
-      margin-bottom: 20px;
-      animation: fadeIn 1s ease forwards;
-    }
-    
-    .splash-date {
-      font-family: 'Cormorant Garamond', serif;
-      font-style: italic;
-      font-size: clamp(20px, 4vw, 28px);
-      letter-spacing: 0.12em;
-      animation: fadeIn 1s 0.3s ease forwards;
+    .splash-divider {
+      display: flex;
+      align-items: center;
+      gap: clamp(8px, 3vw, 14px);
+      justify-content: center;
+      margin: clamp(10px, 2.5vh, 18px) auto 0;
       opacity: 0;
+      animation: fadeIn 1s 1.2s ease forwards;
     }
-    
-    .splash-tap {
-      margin-top: 40px;
-      font-size: 12px;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      animation: fadeIn 1s 0.6s ease forwards, pulse 2s 1.6s ease infinite;
-      opacity: 0;
-      cursor: pointer;
-    }
-    
-    .splash-tap::after {
-      content: '↓';
+    .splash-divider span {
+      width: clamp(24px, 7vw, 50px);
+      height: 1px;
+      background: var(--primary);
       display: block;
-      font-size: 20px;
-      margin-top: 10px;
-      animation: bounce 1.5s ease infinite;
+      opacity: 0.8;
     }
+    .splash-divider i { color: var(--primary); font-style: normal; font-size: 9px; }
+
+    
 
     /* ── MODERN MINIMALIST MUSIC BUTTON ── */
     .music-btn {
