@@ -44,6 +44,107 @@
       user-select: none;
     }
 
+    /* ── NAVIGATION HEADER ── */
+    .nav-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 20px 0;
+      transform: translateY(-100%);
+      transition: transform 0.4s ease;
+    }
+    
+    .nav-header.visible {
+      transform: translateY(0);
+    }
+    
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .nav-logo {
+      font-family: 'Bodoni Moda', serif;
+      font-size: 24px;
+      color: var(--text-main);
+      letter-spacing: 0.08em;
+      text-decoration: none;
+    }
+    
+    .nav-menu {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+    
+    .nav-menu a {
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      text-decoration: none;
+      font-weight: 400;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+    
+    .nav-menu a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent-strong);
+      transition: width 0.3s ease;
+    }
+    
+    .nav-menu a:hover {
+      color: var(--accent-strong);
+    }
+    
+    .nav-menu a:hover::after {
+      width: 100%;
+    }
+    
+    /* Mobile Menu Toggle */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 5px;
+    }
+    
+    .menu-toggle span {
+      width: 25px;
+      height: 2px;
+      background: var(--text-main);
+      transition: all 0.3s ease;
+    }
+    
+    .menu-toggle.active span:nth-child(1) {
+      transform: rotate(45deg) translate(7px, 7px);
+    }
+    
+    .menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+    
+    .menu-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
     /* ── SPLASH ── */
     body.splash-active { overflow: hidden; }
 
@@ -51,23 +152,20 @@
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background: #000;
+      background: linear-gradient(135deg, #A8C9D0 0%, #C1E9D9 50%, #FBC1CE 100%);
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       justify-content: center;
-      padding-bottom: max(clamp(36px, 8vh, 80px), env(safe-area-inset-bottom, 0px) + 36px);
       cursor: pointer;
-      height: 100dvh;
-      height: 100vh;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
     }
-    @supports (height: 100dvh) {
-      #splash { height: 100dvh; }
-    }
+    
     #splash.hidden {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
     }
+    
     #splash video {
       position: absolute;
       inset: 0;
@@ -76,100 +174,187 @@
       object-fit: cover;
       object-position: center center;
       pointer-events: none;
-      min-width: 100%;
-      min-height: 100%;
+      opacity: 0;
+      transition: opacity 0.5s ease;
     }
-    #splash::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 55%;
-      background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
-      pointer-events: none;
-      z-index: 1;
+    
+    #splash video.loaded {
+      opacity: 1;
     }
+    
     .splash-content {
       position: relative;
       z-index: 2;
       text-align: center;
       padding: 0 clamp(20px, 8vw, 60px);
-      pointer-events: none;
-      width: 100%;
-      max-width: 600px;
+      color: var(--white);
     }
-    .splash-divider {
-      display: flex;
-      align-items: center;
-      gap: clamp(8px, 3vw, 14px);
-      justify-content: center;
-      margin: clamp(10px, 2.5vh, 18px) auto 0;
+    
+    .splash-names {
+      font-family: 'Bodoni Moda', serif;
+      font-size: clamp(48px, 10vw, 90px);
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      margin-bottom: 20px;
+      animation: fadeIn 1s ease forwards;
+    }
+    
+    .splash-date {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(20px, 4vw, 28px);
+      letter-spacing: 0.12em;
+      animation: fadeIn 1s 0.3s ease forwards;
       opacity: 0;
-      animation: fadeIn 1s 1.2s ease forwards;
     }
-    .splash-divider span {
-      width: clamp(24px, 7vw, 50px);
-      height: 1px;
-      background: var(--primary);
-      display: block;
-      opacity: 0.8;
+    
+    .splash-tap {
+      margin-top: 40px;
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      animation: fadeIn 1s 0.6s ease forwards, pulse 2s 1.6s ease infinite;
+      opacity: 0;
     }
-    .splash-divider i { color: var(--primary); font-style: normal; font-size: 9px; }
 
-    /* ── MUSIC TOGGLE BUTTON ── */
+    /* ── MODERN MINIMALIST MUSIC BUTTON ── */
     .music-btn {
       position: fixed;
       bottom: 30px;
       right: 30px;
-      width: 55px;
-      height: 55px;
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
-      background: var(--accent-strong);
-      border: 3px solid var(--white);
-      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      background: var(--white);
+      border: none;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06);
       cursor: pointer;
-      z-index: 1000;
+      z-index: 999;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: transform 0.3s ease, background 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       opacity: 0;
       visibility: hidden;
+      overflow: hidden;
     }
+    
     .music-btn.visible {
       opacity: 1;
       visibility: visible;
-      animation: bounceIn 0.8s ease forwards;
+      animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
+    
     .music-btn:hover {
-      transform: scale(1.1);
-      background: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12), 0 3px 6px rgba(0, 0, 0, 0.08);
     }
-    .music-btn svg {
-      fill: var(--white);
-      width: 26px;
-      height: 26px;
+    
+    .music-btn:active {
+      transform: translateY(0);
+    }
+    
+    .music-icon {
+      position: relative;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Sound Wave Animation */
+    .sound-wave {
+      display: flex;
+      gap: 3px;
+      align-items: center;
+      height: 20px;
+    }
+    
+    .sound-wave span {
+      width: 3px;
+      background: var(--accent-strong);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    
+    .sound-wave span:nth-child(1) {
+      height: 8px;
+      animation: wave 0.8s ease-in-out infinite;
+    }
+    
+    .sound-wave span:nth-child(2) {
+      height: 14px;
+      animation: wave 0.8s ease-in-out 0.2s infinite;
+    }
+    
+    .sound-wave span:nth-child(3) {
+      height: 18px;
+      animation: wave 0.8s ease-in-out 0.4s infinite;
+    }
+    
+    .sound-wave span:nth-child(4) {
+      height: 12px;
+      animation: wave 0.8s ease-in-out 0.6s infinite;
+    }
+    
+    .music-btn.paused .sound-wave span {
+      animation: none;
+      height: 4px;
+    }
+    
+    /* Play Icon (hidden when playing) */
+    .play-icon {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 10px solid var(--accent-strong);
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      margin-left: 2px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .music-btn.paused .play-icon {
+      opacity: 1;
+    }
+    
+    .music-btn.paused .sound-wave {
+      opacity: 0;
     }
 
     /* ── MAIN ── */
     #main {
       min-height: 100vh;
-      /* Integrated Background Image */
-      background: url('background.jpg') center center / cover fixed, var(--bg);
       position: relative;
+      /* Optional background image - will gracefully degrade if missing */
+      background: var(--bg);
     }
     
-    /* Overlay to ensure text visibility over the background image */
+    /* Only apply background image if it exists */
+    #main.has-bg-image {
+      background: url('background.jpg') center center / cover fixed, var(--bg);
+    }
+    
+    /* Overlay to ensure text visibility */
     #main::before {
       content: '';
       position: fixed;
       inset: 0;
-      background: rgba(254, 241, 240, 0.85); /* Semi-transparent blush */
+      background: rgba(254, 241, 240, 0.85);
       pointer-events: none;
       z-index: 0;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    #main.has-bg-image::before {
+      opacity: 1;
     }
 
     section { position: relative; z-index: 1; }
-    .bg-alt { background-color: rgba(226, 238, 219, 0.7); } /* Soft sage with opacity */
+    .bg-alt { background-color: rgba(226, 238, 219, 0.7); }
 
     /* ── HERO ── */
     #hero {
@@ -179,8 +364,9 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 80px 24px 60px;
+      padding: clamp(100px, 15vh, 140px) clamp(20px, 5vw, 40px) clamp(60px, 10vh, 100px);
     }
+    
     .hero-eyebrow {
       font-family: 'Raleway', sans-serif;
       font-weight: 400;
@@ -188,62 +374,83 @@
       letter-spacing: 0.55em;
       text-transform: uppercase;
       color: var(--text-soft);
-      margin-bottom: 22px;
+      margin-bottom: clamp(18px, 3vh, 22px);
       opacity: 0;
       animation: fadeUp 1.2s 0.2s ease forwards;
     }
+    
     .hero-rule {
       display: flex;
       align-items: center;
-      gap: 16px;
-      margin: 0 auto 24px;
+      gap: clamp(12px, 2vw, 16px);
+      margin: 0 auto clamp(20px, 3vh, 24px);
       width: fit-content;
       opacity: 0;
       animation: fadeUp 1.2s 0.4s ease forwards;
     }
-    .hero-rule span { display: block; width: 70px; height: 1px; background: linear-gradient(to right, transparent, var(--accent-strong)); }
-    .hero-rule span:last-child { background: linear-gradient(to left, transparent, var(--accent-strong)); }
-    .hero-rule i { color: var(--accent-strong); font-style: normal; font-size: 8px; letter-spacing: 0.3em; opacity: 0.8; }
+    
+    .hero-rule span { 
+      display: block; 
+      width: clamp(50px, 10vw, 70px); 
+      height: 1px; 
+      background: linear-gradient(to right, transparent, var(--accent-strong)); 
+    }
+    
+    .hero-rule span:last-child { 
+      background: linear-gradient(to left, transparent, var(--accent-strong)); 
+    }
+    
+    .hero-rule i { 
+      color: var(--accent-strong); 
+      font-style: normal; 
+      font-size: clamp(7px, 1.2vw, 8px); 
+      letter-spacing: 0.3em; 
+      opacity: 0.8; 
+    }
     
     .hero-names {
       display: flex;
       align-items: baseline;
       justify-content: center;
-      gap: 20px;
+      gap: clamp(16px, 3vw, 20px);
       flex-wrap: wrap;
       opacity: 0;
       animation: fadeUp 1.2s 0.6s ease forwards;
     }
+    
     .partner-name {
       font-family: 'Bodoni Moda', serif;
-      font-size: clamp(56px, 13vw, 110px);
+      font-size: clamp(48px, 11vw, 110px);
       font-weight: 400;
       color: var(--text-main);
       letter-spacing: 0.06em;
       line-height: 1;
     }
+    
     .hero-ampersand {
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
-      font-size: clamp(48px, 10vw, 88px);
+      font-size: clamp(40px, 9vw, 88px);
       color: var(--accent-strong);
       opacity: 0.9;
       line-height: 1;
-      padding-bottom: 8px;
+      padding-bottom: clamp(4px, 1vh, 8px);
     }
+    
     .hero-event-type {
-      margin-top: 30px;
+      margin-top: clamp(24px, 4vh, 30px);
       font-family: 'Cormorant Garamond', serif;
       font-style: italic;
-      font-size: clamp(22px, 4vw, 28px);
+      font-size: clamp(20px, 3.5vw, 28px);
       color: var(--text-soft);
       letter-spacing: 0.12em;
       opacity: 0;
       animation: fadeUp 1.2s 1s ease forwards;
       font-weight: 400;
     }
+    
     .hero-details {
-      margin-top: 50px;
+      margin-top: clamp(40px, 6vh, 50px);
       display: flex;
       flex-wrap: wrap;
       gap: 0;
@@ -251,15 +458,19 @@
       opacity: 0;
       animation: fadeUp 1.2s 1.2s ease forwards;
       border: 1px solid var(--card-border);
-      border-radius: 4px;
+      border-radius: 8px;
       overflow: hidden;
       background: var(--card);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     }
+    
     .hero-detail-block {
       text-align: center;
-      padding: 20px 40px;
+      padding: clamp(18px, 3vh, 24px) clamp(30px, 6vw, 50px);
       position: relative;
+      min-width: 150px;
     }
+    
     .hero-detail-block:not(:last-child)::after {
       content: '';
       position: absolute;
@@ -269,17 +480,19 @@
       width: 1px;
       background: var(--card-border);
     }
+    
     .hero-detail-block .label {
-      font-size: 10px;
+      font-size: clamp(9px, 1.5vw, 10px);
       letter-spacing: 0.4em;
       text-transform: uppercase;
       color: var(--text-soft);
       margin-bottom: 8px;
       font-weight: 500;
     }
+    
     .hero-detail-block .value {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(20px, 3.5vw, 26px);
+      font-size: clamp(18px, 3vw, 26px);
       font-weight: 400;
       color: var(--text-main);
       letter-spacing: 0.04em;
@@ -289,25 +502,31 @@
     #countdown-timer {
       display: flex;
       justify-content: center;
-      gap: clamp(15px, 4vw, 40px);
-      margin-top: 40px;
+      gap: clamp(12px, 3vw, 40px);
+      margin-top: clamp(32px, 5vh, 40px);
+      flex-wrap: wrap;
     }
+    
     .time-box {
       background: var(--card);
       border: 1px solid var(--card-border);
-      padding: 20px;
-      border-radius: 4px;
-      min-width: 90px;
+      padding: clamp(16px, 3vh, 20px);
+      border-radius: 8px;
+      min-width: clamp(70px, 15vw, 90px);
       text-align: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
     }
+    
     .time-box span {
       display: block;
       font-family: 'Bodoni Moda', serif;
-      font-size: 32px;
+      font-size: clamp(28px, 6vw, 36px);
       color: var(--accent-strong);
+      font-weight: 400;
     }
+    
     .time-box p {
-      font-size: 10px;
+      font-size: clamp(9px, 1.5vw, 10px);
       letter-spacing: 0.2em;
       text-transform: uppercase;
       margin-top: 5px;
@@ -318,17 +537,19 @@
     .section-wrapper {
       max-width: 900px;
       margin: 0 auto;
-      padding: 90px 32px;
+      padding: clamp(60px, 12vh, 90px) clamp(24px, 5vw, 32px);
     }
+    
     .section-label {
       text-align: center;
-      font-size: 10px;
+      font-size: clamp(9px, 1.5vw, 10px);
       letter-spacing: 0.4em;
       text-transform: uppercase;
       color: var(--text-soft);
       margin-bottom: 10px;
       font-weight: 500;
     }
+    
     .section-title {
       text-align: center;
       font-family: 'Bodoni Moda', serif;
@@ -338,6 +559,7 @@
       margin-bottom: 15px;
       letter-spacing: 0.08em;
     }
+    
     .section-rule {
       width: 60px;
       height: 1px;
@@ -349,7 +571,7 @@
     /* ── TEXT CONTENT ── */
     .story-text, .info-text {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(18px, 2.5vw, 22px);
+      font-size: clamp(17px, 2.5vw, 22px);
       line-height: 1.8;
       color: var(--text-soft);
       text-align: center;
@@ -360,25 +582,35 @@
     /* ── INFO GRIDS ── */
     .info-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 30px;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+      gap: clamp(20px, 4vw, 30px);
       margin-top: 40px;
     }
+    
     .info-card {
       background: var(--card);
       border: 1px solid var(--card-border);
-      padding: 30px;
-      border-radius: 4px;
+      padding: clamp(24px, 4vw, 30px);
+      border-radius: 8px;
       text-align: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+    
+    .info-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+    
     .info-card h3 {
       font-family: 'Bodoni Moda', serif;
-      font-size: 22px;
+      font-size: clamp(20px, 3vw, 22px);
       color: var(--text-main);
       margin-bottom: 10px;
     }
+    
     .info-card p {
-      font-size: 14px;
+      font-size: clamp(13px, 2vw, 14px);
       line-height: 1.6;
       color: var(--text-soft);
     }
@@ -387,16 +619,18 @@
     .venue-card {
       background: var(--card);
       border: 1px solid var(--card-border);
-      border-radius: 4px;
-      padding: 40px 30px;
+      border-radius: 8px;
+      padding: clamp(30px, 5vw, 40px) clamp(24px, 4vw, 30px);
       text-align: center;
       margin-top: 40px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
     }
+    
     .map-embed {
       width: 100%;
-      height: 350px;
+      height: clamp(280px, 40vh, 400px);
       border: 2px solid var(--primary-soft);
-      border-radius: 4px;
+      border-radius: 8px;
       margin-top: 20px;
     }
 
@@ -405,32 +639,39 @@
       text-align: center;
       margin-top: 30px;
     }
+    
     .rsvp-btn {
       display: inline-block;
       background: var(--accent-strong);
       color: var(--text-main);
       text-decoration: none;
-      padding: 20px 45px;
+      padding: clamp(16px, 3vh, 20px) clamp(35px, 6vw, 45px);
       font-family: 'Raleway', sans-serif;
-      font-size: 14px;
+      font-size: clamp(12px, 2vw, 14px);
       letter-spacing: 0.3em;
       text-transform: uppercase;
       font-weight: 500;
       cursor: pointer;
-      transition: background 0.3s, transform 0.3s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border-radius: 40px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 15px rgba(251, 193, 206, 0.3);
     }
+    
     .rsvp-btn:hover {
       background: var(--primary);
       transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(168, 201, 208, 0.4);
+    }
+    
+    .rsvp-btn:active {
+      transform: translateY(0);
     }
 
     /* ── FOOTER ── */
     footer {
       text-align: center;
-      padding: 40px 24px 60px;
-      font-size: 10px;
+      padding: clamp(30px, 6vh, 40px) 24px clamp(40px, 8vh, 60px);
+      font-size: clamp(9px, 1.5vw, 10px);
       letter-spacing: 0.35em;
       color: var(--text-light);
       text-transform: uppercase;
@@ -439,18 +680,21 @@
       position: relative;
       z-index: 1;
     }
+    
     .footer-rule {
       width: 80px;
       height: 1px;
       background: var(--card-border);
       margin: 0 auto 20px;
     }
+    
     .credits a {
       color: var(--accent-strong);
       text-decoration: none;
       font-weight: 600;
       transition: color 0.3s;
     }
+    
     .credits a:hover {
       color: var(--primary);
     }
@@ -460,14 +704,31 @@
       from { opacity: 0; transform: translateY(28px); }
       to   { opacity: 1; transform: translateY(0); }
     }
+    
     @keyframes fadeIn {
       from { opacity: 0; }
       to   { opacity: 1; }
     }
-    @keyframes bounceIn {
-      0% { transform: scale(0.5); opacity: 0; }
-      60% { transform: scale(1.1); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    
+    @keyframes slideInUp {
+      from { 
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to { 
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes wave {
+      0%, 100% { height: 8px; }
+      50% { height: 18px; }
     }
 
     .reveal {
@@ -475,52 +736,191 @@
       transform: translateY(36px);
       transition: opacity 1s ease, transform 1s ease;
     }
+    
     .reveal.visible { opacity: 1; transform: none; }
     .reveal-d1 { transition-delay: 0.1s; }
     .reveal-d2 { transition-delay: 0.2s; }
     .reveal-d3 { transition-delay: 0.3s; }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 768px) {
-      .hero-detail-block { padding: 18px 28px; }
-      .section-wrapper { padding: 70px 24px; }
-      .map-embed { height: 280px; }
+    /* ── RESPONSIVE - TABLET ── */
+    @media (max-width: 1024px) {
+      .nav-container {
+        padding: 0 24px;
+      }
+      
+      .nav-menu {
+        gap: 30px;
+      }
     }
-    @media (max-width: 600px) {
-      #hero { padding: 90px 18px 56px; }
-      .hero-names { flex-direction: column; align-items: center; gap: 0; }
-      .partner-name { font-size: clamp(52px, 16vw, 72px); }
-      .hero-ampersand { font-size: clamp(38px, 12vw, 56px); padding: 0; line-height: 1.1; }
-      .hero-details { flex-direction: column; width: 100%; max-width: 300px; margin-top: 32px; }
-      .hero-detail-block:not(:last-child)::after { top: auto; right: 20%; bottom: 0; left: 20%; width: 60%; height: 1px; }
-      #countdown-timer { gap: 10px; }
-      .time-box { min-width: 70px; padding: 15px 10px; }
-      .time-box span { font-size: 24px; }
-      .music-btn { bottom: 20px; right: 20px; width: 45px; height: 45px; }
-      .music-btn svg { width: 20px; height: 20px; }
+
+    /* ── RESPONSIVE - MOBILE ── */
+    @media (max-width: 768px) {
+      .nav-menu {
+        position: fixed;
+        top: 72px;
+        right: 0;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(10px);
+        flex-direction: column;
+        gap: 0;
+        padding: 20px 0;
+        width: 100%;
+        max-width: 300px;
+        border-left: 1px solid var(--card-border);
+        border-bottom: 1px solid var(--card-border);
+        box-shadow: -4px 4px 20px rgba(0, 0, 0, 0.1);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+      }
+      
+      .nav-menu.active {
+        transform: translateX(0);
+      }
+      
+      .nav-menu li {
+        padding: 15px 32px;
+        border-bottom: 1px solid rgba(168, 201, 208, 0.2);
+      }
+      
+      .nav-menu li:last-child {
+        border-bottom: none;
+      }
+      
+      .nav-menu a::after {
+        display: none;
+      }
+      
+      .menu-toggle {
+        display: flex;
+      }
+      
+      .hero-names {
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(4px, 1vh, 8px);
+      }
+      
+      .hero-details {
+        flex-direction: column;
+        width: 100%;
+        max-width: 320px;
+      }
+      
+      .hero-detail-block:not(:last-child)::after {
+        top: auto;
+        right: 15%;
+        bottom: 0;
+        left: 15%;
+        width: 70%;
+        height: 1px;
+      }
+      
+      .music-btn {
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+      }
+      
+      .sound-wave {
+        gap: 2px;
+      }
+      
+      .sound-wave span {
+        width: 2.5px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .nav-header {
+        padding: 15px 0;
+      }
+      
+      .nav-logo {
+        font-size: 20px;
+      }
+      
+      .hero-eyebrow {
+        letter-spacing: 0.4em;
+      }
+      
+      #countdown-timer {
+        gap: 8px;
+      }
+      
+      .time-box {
+        min-width: 60px;
+        padding: 12px 8px;
+      }
+    }
+
+    /* ── LAPTOP/DESKTOP OPTIMIZATION ── */
+    @media (min-width: 1200px) {
+      .section-wrapper {
+        max-width: 1000px;
+      }
+      
+      .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (min-width: 1440px) {
+      .section-wrapper {
+        max-width: 1100px;
+      }
     }
   </style>
 </head>
 <body>
 
+  <!-- Navigation Header -->
+  <nav class="nav-header" id="navHeader">
+    <div class="nav-container">
+      <a href="#hero" class="nav-logo">N & S</a>
+      <div class="menu-toggle" id="menuToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="#our-story">Our Story</a></li>
+        <li><a href="#accommodations">Travel & Stay</a></li>
+        <li><a href="#rsvp">RSVP</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Splash Screen -->
   <div id="splash">
-    <video id="splashVideo" autoplay muted playsinline preload="auto" poster="poster.jpg">
+    <video id="splashVideo" muted playsinline preload="auto">
       <source src="splash.mp4" type="video/mp4" />
     </video>
     <div class="splash-content">
-      <div class="splash-divider">
-      </div>
+
+      <div class="splash-tap">Tap to Continue</div>
     </div>
   </div>
 
+  <!-- Background Music -->
   <audio id="bgMusic" loop>
     <source src="music.mp3" type="audio/mpeg" />
   </audio>
 
-  <button id="music-toggle" class="music-btn" aria-label="Toggle Music">
-    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+  <!-- Modern Music Toggle Button -->
+  <button id="music-toggle" class="music-btn paused" aria-label="Toggle Music">
+    <div class="music-icon">
+      <div class="sound-wave">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <div class="play-icon"></div>
+    </div>
   </button>
 
+  <!-- Main Content -->
   <div id="main">
 
     <section id="hero">
@@ -574,9 +974,9 @@
       <div class="section-rule reveal reveal-d2"></div>
       
       <p class="story-text reveal reveal-d3">
-        It all started with a simple moment that neither of us expected would change everything. What began as friendship quickly grew into something we couldn’t ignore.
+        It all started with a simple moment that neither of us expected would change everything. What began as friendship quickly grew into something we couldn't ignore.
         <br><br>
-        From our first date, we were drawn to each other’s laughter, kindness and curiosity; traveling across continents just to be together. Over time, that connection became a partnership built on love, trust and laughter. 
+        From our first date, we were drawn to each other's laughter, kindness and curiosity; traveling across continents just to be together. Over time, that connection became a partnership built on love, trust and laughter. 
         <br><br>
         Now, we are so excited to begin this next chapter and celebrate with the people we love most.
       </p>
@@ -608,10 +1008,8 @@
         For our out-of-town guests, we have listed several nearby hotel options that are convenient to the venue. We encourage guests to book early to ensure availability for our wedding weekend.
       </p>
 
-
-
       <div class="venue-card reveal">
-        <h3 style="font-family: 'Bodoni Moda', serif; font-size: 26px; color: var(--text-main);">La Fontaine Location</h3>
+        <h3 style="font-family: 'Bodoni Moda', serif; font-size: clamp(22px, 4vw, 26px); color: var(--text-main);">La Fontaine Location</h3>
         <iframe 
           class="map-embed" 
           src="https://maps.google.com/maps?q=La+Fontaine&t=&z=13&ie=UTF8&iwloc=&output=embed" 
@@ -643,62 +1041,141 @@
   </div>
 
   <script>
+    // ── NAVIGATION ──
+    const navHeader = document.getElementById('navHeader');
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.getElementById('navMenu');
+    
+    // Show nav on scroll
+    let lastScroll = 0;
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      
+      if (currentScroll > 100) {
+        navHeader.classList.add('visible');
+      } else {
+        navHeader.classList.remove('visible');
+      }
+      
+      lastScroll = currentScroll;
+    });
+    
+    // Mobile menu toggle
+    menuToggle.addEventListener('click', () => {
+      menuToggle.classList.toggle('active');
+      navMenu.classList.toggle('active');
+    });
+    
+    // Close menu when clicking a link
+    navMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        menuToggle.classList.remove('active');
+        navMenu.classList.remove('active');
+      });
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!navMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+        menuToggle.classList.remove('active');
+        navMenu.classList.remove('active');
+      }
+    });
+
     // ── SPLASH ──
     const splashVideo = document.getElementById('splashVideo');
-    const splash      = document.getElementById('splash');
-    const musicBtn    = document.getElementById('music-toggle');
-    const music       = document.getElementById('bgMusic');
+    const splash = document.getElementById('splash');
+    const musicBtn = document.getElementById('music-toggle');
+    const music = document.getElementById('bgMusic');
+    const mainDiv = document.getElementById('main');
     
-    let playing   = false;
     let dismissed = false;
-    let isMusicPlaying = false;
-
-    // SVG Icons for Audio Button
-    const playIcon  = '<path d="M8 5v14l11-7z"/>';
-    const pauseIcon = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
-
+    let videoLoaded = false;
+    
     document.body.classList.add('splash-active');
-
-    splashVideo.addEventListener('canplay', function() {
-      if (!playing) {
-        splashVideo.currentTime = 0;
-        splashVideo.pause();
+    
+    // Auto-dismiss splash after 3 seconds if video doesn't load
+    const splashTimeout = setTimeout(() => {
+      if (!dismissed) {
+        console.log('Auto-dismissing splash (timeout)');
+        dismiss();
       }
-    }, { once: true });
+    }, 3000);
+    
+    // Try to load video
+    splashVideo.addEventListener('loadeddata', () => {
+      videoLoaded = true;
+      splashVideo.classList.add('loaded');
+    });
+    
+    splashVideo.addEventListener('error', () => {
+      console.log('Video failed to load, dismissing splash');
+      dismiss();
+    });
+    
+    // Try to load background image
+    const bgImage = new Image();
+    bgImage.onload = () => {
+      mainDiv.classList.add('has-bg-image');
+    };
+    bgImage.onerror = () => {
+      console.log('Background image not found, using solid color');
+    };
+    bgImage.src = 'background.jpg';
 
     function dismiss() {
       if (dismissed) return;
       dismissed = true;
-      splashVideo.pause();
-      splash.style.transition = 'none';
+      clearTimeout(splashTimeout);
+      
+      if (videoLoaded) {
+        splashVideo.pause();
+      }
+      
       splash.classList.add('hidden');
       document.body.classList.remove('splash-active');
-      musicBtn.classList.add('visible'); // Show music control button
+      musicBtn.classList.add('visible');
+      
+      // Try to play music (will fail if user hasn't interacted)
       tryPlayMusic();
     }
 
-    function startVideo() {
-      if (playing) return;
-      playing = true;
-      splashVideo.currentTime = 0; 
-      splashVideo.play().catch(() => dismiss());
+    function startSplash() {
+      if (videoLoaded) {
+        splashVideo.currentTime = 0;
+        splashVideo.play().catch(() => {
+          console.log('Video play failed');
+          dismiss();
+        });
+        
+        splashVideo.addEventListener('ended', dismiss, { once: true });
+      } else {
+        dismiss();
+      }
     }
 
-    splashVideo.addEventListener('ended', dismiss);
-    splashVideo.addEventListener('error', () => setTimeout(dismiss, 400));
-    splash.addEventListener('click', startVideo);
-    splash.addEventListener('touchend', function(e) {
+    splash.addEventListener('click', () => {
+      if (!dismissed) {
+        startSplash();
+      }
+    });
+    
+    splash.addEventListener('touchend', (e) => {
       e.preventDefault();
-      startVideo();
+      if (!dismissed) {
+        startSplash();
+      }
     }, { passive: false });
 
     // ── MUSIC LOGIC ──
-    function setPlayState(playingState) {
-      isMusicPlaying = playingState;
-      if (isMusicPlaying) {
-        musicBtn.innerHTML = `<svg viewBox="0 0 24 24">${pauseIcon}</svg>`;
+    let isMusicPlaying = false;
+
+    function setPlayState(playing) {
+      isMusicPlaying = playing;
+      if (playing) {
+        musicBtn.classList.remove('paused');
       } else {
-        musicBtn.innerHTML = `<svg viewBox="0 0 24 24">${playIcon}</svg>`;
+        musicBtn.classList.add('paused');
       }
     }
 
@@ -716,20 +1193,22 @@
         music.pause();
         setPlayState(false);
       } else {
-        music.play();
-        setPlayState(true);
+        music.play().then(() => {
+          setPlayState(true);
+        }).catch(() => {
+          alert('Please interact with the page first to enable audio');
+        });
       }
     });
 
     // ── COUNTDOWN TIMER ──
     const countdownDate = new Date("Sep 26, 2026 00:00:00").getTime();
     
-    const timerInterval = setInterval(function() {
+    function updateCountdown() {
       const now = new Date().getTime();
       const distance = countdownDate - now;
         
       if (distance < 0) {
-        clearInterval(timerInterval);
         document.getElementById("days").innerText = "00";
         document.getElementById("hours").innerText = "00";
         document.getElementById("minutes").innerText = "00";
@@ -746,7 +1225,10 @@
       document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
       document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
       document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
-    }, 1000);
+    }
+    
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
 
     // ── SCROLL REVEAL ──
     const observer = new IntersectionObserver((entries) => {
@@ -756,7 +1238,7 @@
           observer.unobserve(e.target);
         }
       });
-    }, { threshold: 0.12 });
+    }, { threshold: 0.1 });
 
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
   </script>
