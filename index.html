@@ -898,7 +898,7 @@
 
   <!-- Splash Screen -->
    <div id="splash">
-  <video id="splashVideo" muted playsinline preload="auto">
+    <video id="splashVideo" autoplay muted playsinline preload="auto" poster="poster.jpg">
       <source src="splash.mp4" type="video/mp4" />
     </video>
     <div class="splash-content">
@@ -1089,8 +1089,7 @@
 
      // ── SPLASH ──
     const splashVideo = document.getElementById('splashVideo');
-
-  
+    const splash      = document.getElementById('splash');
     const musicBtn    = document.getElementById('music-toggle');
     const music       = document.getElementById('bgMusic');
     
