@@ -144,30 +144,28 @@
     .menu-toggle.active span:nth-child(3) {
       transform: rotate(-45deg) translate(6px, -6px);
     }
-      /* ── SPLASH ── */
+
+    /* ── SPLASH ── */
     body.splash-active { overflow: hidden; }
 
     #splash {
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background: #000;
+      background: linear-gradient(135deg, #A8C9D0 0%, #C1E9D9 50%, #FBC1CE 100%);
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       justify-content: center;
-      padding-bottom: max(clamp(36px, 8vh, 80px), env(safe-area-inset-bottom, 0px) + 36px);
       cursor: pointer;
-      height: 100dvh;
-      height: 100vh;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
     }
-    @supports (height: 100dvh) {
-      #splash { height: 100dvh; }
-    }
+    
     #splash.hidden {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
     }
+    
     #splash video {
       position: absolute;
       inset: 0;
@@ -176,46 +174,57 @@
       object-fit: cover;
       object-position: center center;
       pointer-events: none;
-      min-width: 100%;
-      min-height: 100%;
+      opacity: 0;
+      transition: opacity 0.5s ease;
     }
-    #splash::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 55%;
-      background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
-      pointer-events: none;
-      z-index: 1;
+    
+    #splash video.loaded {
+      opacity: 1;
     }
+    
     .splash-content {
       position: relative;
       z-index: 2;
       text-align: center;
       padding: 0 clamp(20px, 8vw, 60px);
-      pointer-events: none;
-      width: 100%;
-      max-width: 600px;
+      color: var(--white);
     }
-    .splash-divider {
-      display: flex;
-      align-items: center;
-      gap: clamp(8px, 3vw, 14px);
-      justify-content: center;
-      margin: clamp(10px, 2.5vh, 18px) auto 0;
-      opacity: 0;
-      animation: fadeIn 1s 1.2s ease forwards;
-    }
-    .splash-divider span {
-      width: clamp(24px, 7vw, 50px);
-      height: 1px;
-      background: var(--primary);
-      display: block;
-      opacity: 0.8;
-    }
-    .splash-divider i { color: var(--primary); font-style: normal; font-size: 9px; }
-
     
+    .splash-names {
+      font-family: 'Bodoni Moda', serif;
+      font-size: clamp(48px, 10vw, 90px);
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      margin-bottom: 20px;
+      animation: fadeIn 1s ease forwards;
+    }
+    
+    .splash-date {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(20px, 4vw, 28px);
+      letter-spacing: 0.12em;
+      animation: fadeIn 1s 0.3s ease forwards;
+      opacity: 0;
+    }
+    
+    .splash-tap {
+      margin-top: 40px;
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      animation: fadeIn 1s 0.6s ease forwards, pulse 2s 1.6s ease infinite;
+      opacity: 0;
+      cursor: pointer;
+    }
+    
+    .splash-tap::after {
+      content: '↓';
+      display: block;
+      font-size: 20px;
+      margin-top: 10px;
+      animation: bounce 1.5s ease infinite;
+    }
 
     /* ── MODERN MINIMALIST MUSIC BUTTON ── */
     .music-btn {
@@ -897,13 +906,14 @@
   </nav>
 
   <!-- Splash Screen -->
-   <div id="splash">
-    <video id="splashVideo" autoplay muted playsinline preload="auto" poster="poster.jpg">
+  <div id="splash">
+    <video id="splashVideo" muted playsinline preload="auto">
       <source src="splash.mp4" type="video/mp4" />
     </video>
     <div class="splash-content">
-      <div class="splash-divider">
-      </div>
+      <div class="splash-names">Nana & Sheila</div>
+      <div class="splash-date">September 26, 2026</div>
+      <div class="splash-tap">Tap Anywhere to Start</div>
     </div>
   </div>
 
@@ -1087,55 +1097,91 @@
       }
     });
 
-     // ── SPLASH ──
+    // ── SPLASH ──
     const splashVideo = document.getElementById('splashVideo');
-    const splash      = document.getElementById('splash');
-    const musicBtn    = document.getElementById('music-toggle');
-    const music       = document.getElementById('bgMusic');
+    const splash = document.getElementById('splash');
+    const musicBtn = document.getElementById('music-toggle');
+    const music = document.getElementById('bgMusic');
+    const mainDiv = document.getElementById('main');
     
-    let playing   = false;
     let dismissed = false;
- 
-
-    // SVG Icons for Audio Button
-    const playIcon  = '<path d="M8 5v14l11-7z"/>';
-    const pauseIcon = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
-
+    let videoLoaded = false;
+    let videoStarted = false;
+    
     document.body.classList.add('splash-active');
-
-    splashVideo.addEventListener('canplay', function() {
-      if (!playing) {
-        splashVideo.currentTime = 0;
-        splashVideo.pause();
-      }
-    }, { once: true });
+    
+    // Try to load video
+    splashVideo.addEventListener('loadeddata', () => {
+      videoLoaded = true;
+      splashVideo.classList.add('loaded');
+    });
+    
+    splashVideo.addEventListener('error', () => {
+      console.log('Video not found - using gradient background');
+      videoLoaded = false;
+    });
+    
+    // Try to load background image
+    const bgImage = new Image();
+    bgImage.onload = () => {
+      mainDiv.classList.add('has-bg-image');
+    };
+    bgImage.onerror = () => {
+      console.log('Background image not found, using solid color');
+    };
+    bgImage.src = 'background.jpg';
 
     function dismiss() {
       if (dismissed) return;
       dismissed = true;
-      splashVideo.pause();
-      splash.style.transition = 'none';
+      
+      if (videoLoaded && videoStarted) {
+        splashVideo.pause();
+      }
+      
       splash.classList.add('hidden');
       document.body.classList.remove('splash-active');
-      musicBtn.classList.add('visible'); // Show music control button
+      musicBtn.classList.add('visible');
+      
+      // Try to play music
       tryPlayMusic();
     }
 
-    function startVideo() {
-      if (playing) return;
-      playing = true;
-      splashVideo.currentTime = 0; 
-      splashVideo.play().catch(() => dismiss());
+    function startSplash() {
+      if (videoStarted) return; // Prevent multiple taps
+      videoStarted = true;
+      
+      if (videoLoaded) {
+        // Video is available - play it
+        splashVideo.currentTime = 0;
+        splashVideo.play().catch(() => {
+          console.log('Video play failed');
+        });
+        
+        // Dismiss after exactly 3 seconds
+        setTimeout(() => {
+          dismiss();
+        }, 3000);
+      } else {
+        // No video - just dismiss after 3 seconds
+        setTimeout(() => {
+          dismiss();
+        }, 3000);
+      }
     }
 
-    splashVideo.addEventListener('ended', dismiss);
-    splashVideo.addEventListener('error', () => setTimeout(dismiss, 400));
-    splash.addEventListener('click', startVideo);
-    splash.addEventListener('touchend', function(e) {
+    splash.addEventListener('click', () => {
+      if (!dismissed) {
+        startSplash();
+      }
+    });
+    
+    splash.addEventListener('touchend', (e) => {
       e.preventDefault();
-      startVideo();
+      if (!dismissed) {
+        startSplash();
+      }
     }, { passive: false });
-
 
     // ── MUSIC LOGIC ──
     let isMusicPlaying = false;
