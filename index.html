@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nana & Sheila — Save the Date</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Raleway:wght@200;300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      /* New Pastel Color Scheme */
+      --primary:      #A8C9D0;  /* soft blue */
+      --primary-soft: #C1E9D9;  /* mint green */
+      --bg:           #FEF1F0;  /* very light blush */
+      --bg-alt:       #E2EEDB;  /* light sage */
+      --accent:       #FFDAE1;  /* soft pink */
+      --accent-strong:#FBC1CE;  /* rose pink */
+
+      /* Text colors for readability */
+      --text-main:    #2e2218;
+      --text-soft:    #5a4a3a;
+      --text-light:   #7a6a5a;
+
+      /* Cards / surfaces */
+      --card:         rgba(255, 255, 255, 0.85);
+      --card-border:  rgba(168, 201, 208, 0.4); 
+
+      /* Utility */
+      --white:        #ffffff;
+    }
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: 'Raleway', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    /* ── SPLASH ── */
+    body.splash-active { overflow: hidden; }
+
+    #splash {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #000;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: max(clamp(36px, 8vh, 80px), env(safe-area-inset-bottom, 0px) + 36px);
+      cursor: pointer;
+      height: 100dvh;
+      height: 100vh;
+    }
+    @supports (height: 100dvh) {
+      #splash { height: 100dvh; }
+    }
+    #splash.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    #splash video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
+      pointer-events: none;
+      min-width: 100%;
+      min-height: 100%;
+    }
+    #splash::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 55%;
+      background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .splash-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 clamp(20px, 8vw, 60px);
+      pointer-events: none;
+      width: 100%;
+      max-width: 600px;
+    }
+    .splash-divider {
+      display: flex;
+      align-items: center;
+      gap: clamp(8px, 3vw, 14px);
+      justify-content: center;
+      margin: clamp(10px, 2.5vh, 18px) auto 0;
+      opacity: 0;
+      animation: fadeIn 1s 1.2s ease forwards;
+    }
+    .splash-divider span {
+      width: clamp(24px, 7vw, 50px);
+      height: 1px;
+      background: var(--primary);
+      display: block;
+      opacity: 0.8;
+    }
+    .splash-divider i { color: var(--primary); font-style: normal; font-size: 9px; }
+
+    /* ── MUSIC TOGGLE BUTTON ── */
+    .music-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background: var(--accent-strong);
+      border: 3px solid var(--white);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      cursor: pointer;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease, background 0.3s ease;
+      opacity: 0;
+      visibility: hidden;
+    }
+    .music-btn.visible {
+      opacity: 1;
+      visibility: visible;
+      animation: bounceIn 0.8s ease forwards;
+    }
+    .music-btn:hover {
+      transform: scale(1.1);
+      background: var(--primary);
+    }
+    .music-btn svg {
+      fill: var(--white);
+      width: 26px;
+      height: 26px;
+    }
+
+    /* ── MAIN ── */
+    #main {
+      min-height: 100vh;
+      /* Integrated Background Image */
+      background: url('background.jpg') center center / cover fixed, var(--bg);
+      position: relative;
+    }
+    
+    /* Overlay to ensure text visibility over the background image */
+    #main::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: rgba(254, 241, 240, 0.85); /* Semi-transparent blush */
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    section { position: relative; z-index: 1; }
+    .bg-alt { background-color: rgba(226, 238, 219, 0.7); } /* Soft sage with opacity */
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 60px;
+    }
+    .hero-eyebrow {
+      font-family: 'Raleway', sans-serif;
+      font-weight: 400;
+      font-size: clamp(10px, 1.8vw, 13px);
+      letter-spacing: 0.55em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      margin-bottom: 22px;
+      opacity: 0;
+      animation: fadeUp 1.2s 0.2s ease forwards;
+    }
+    .hero-rule {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 0 auto 24px;
+      width: fit-content;
+      opacity: 0;
+      animation: fadeUp 1.2s 0.4s ease forwards;
+    }
+    .hero-rule span { display: block; width: 70px; height: 1px; background: linear-gradient(to right, transparent, var(--accent-strong)); }
+    .hero-rule span:last-child { background: linear-gradient(to left, transparent, var(--accent-strong)); }
+    .hero-rule i { color: var(--accent-strong); font-style: normal; font-size: 8px; letter-spacing: 0.3em; opacity: 0.8; }
+    
+    .hero-names {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 1.2s 0.6s ease forwards;
+    }
+    .partner-name {
+      font-family: 'Bodoni Moda', serif;
+      font-size: clamp(56px, 13vw, 110px);
+      font-weight: 400;
+      color: var(--text-main);
+      letter-spacing: 0.06em;
+      line-height: 1;
+    }
+    .hero-ampersand {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(48px, 10vw, 88px);
+      color: var(--accent-strong);
+      opacity: 0.9;
+      line-height: 1;
+      padding-bottom: 8px;
+    }
+    .hero-event-type {
+      margin-top: 30px;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(22px, 4vw, 28px);
+      color: var(--text-soft);
+      letter-spacing: 0.12em;
+      opacity: 0;
+      animation: fadeUp 1.2s 1s ease forwards;
+      font-weight: 400;
+    }
+    .hero-details {
+      margin-top: 50px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 1.2s 1.2s ease forwards;
+      border: 1px solid var(--card-border);
+      border-radius: 4px;
+      overflow: hidden;
+      background: var(--card);
+    }
+    .hero-detail-block {
+      text-align: center;
+      padding: 20px 40px;
+      position: relative;
+    }
+    .hero-detail-block:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 20%;
+      height: 60%;
+      width: 1px;
+      background: var(--card-border);
+    }
+    .hero-detail-block .label {
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    .hero-detail-block .value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(20px, 3.5vw, 26px);
+      font-weight: 400;
+      color: var(--text-main);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── COUNTDOWN ── */
+    #countdown-timer {
+      display: flex;
+      justify-content: center;
+      gap: clamp(15px, 4vw, 40px);
+      margin-top: 40px;
+    }
+    .time-box {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      padding: 20px;
+      border-radius: 4px;
+      min-width: 90px;
+      text-align: center;
+    }
+    .time-box span {
+      display: block;
+      font-family: 'Bodoni Moda', serif;
+      font-size: 32px;
+      color: var(--accent-strong);
+    }
+    .time-box p {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-top: 5px;
+      color: var(--text-soft);
+    }
+
+    /* ── SECTION SHARED ── */
+    .section-wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 90px 32px;
+    }
+    .section-label {
+      text-align: center;
+      font-size: 10px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    .section-title {
+      text-align: center;
+      font-family: 'Bodoni Moda', serif;
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 400;
+      color: var(--text-main);
+      margin-bottom: 15px;
+      letter-spacing: 0.08em;
+    }
+    .section-rule {
+      width: 60px;
+      height: 1px;
+      background: var(--accent-strong);
+      margin: 0 auto 30px;
+      opacity: 0.8;
+    }
+    
+    /* ── TEXT CONTENT ── */
+    .story-text, .info-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(18px, 2.5vw, 22px);
+      line-height: 1.8;
+      color: var(--text-soft);
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 40px;
+    }
+
+    /* ── INFO GRIDS ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+    .info-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      padding: 30px;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .info-card h3 {
+      font-family: 'Bodoni Moda', serif;
+      font-size: 22px;
+      color: var(--text-main);
+      margin-bottom: 10px;
+    }
+    .info-card p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-soft);
+    }
+
+    /* ── VENUE MAP CARD ── */
+    .venue-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 4px;
+      padding: 40px 30px;
+      text-align: center;
+      margin-top: 40px;
+    }
+    .map-embed {
+      width: 100%;
+      height: 350px;
+      border: 2px solid var(--primary-soft);
+      border-radius: 4px;
+      margin-top: 20px;
+    }
+
+    /* ── RSVP BUTTON ── */
+    .rsvp-btn-container {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .rsvp-btn {
+      display: inline-block;
+      background: var(--accent-strong);
+      color: var(--text-main);
+      text-decoration: none;
+      padding: 20px 45px;
+      font-family: 'Raleway', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+      border-radius: 40px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .rsvp-btn:hover {
+      background: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 40px 24px 60px;
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      color: var(--text-light);
+      text-transform: uppercase;
+      line-height: 2.2;
+      font-weight: 500;
+      position: relative;
+      z-index: 1;
+    }
+    .footer-rule {
+      width: 80px;
+      height: 1px;
+      background: var(--card-border);
+      margin: 0 auto 20px;
+    }
+    .credits a {
+      color: var(--accent-strong);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+    .credits a:hover {
+      color: var(--primary);
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes bounceIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      60% { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-d1 { transition-delay: 0.1s; }
+    .reveal-d2 { transition-delay: 0.2s; }
+    .reveal-d3 { transition-delay: 0.3s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .hero-detail-block { padding: 18px 28px; }
+      .section-wrapper { padding: 70px 24px; }
+      .map-embed { height: 280px; }
+    }
+    @media (max-width: 600px) {
+      #hero { padding: 90px 18px 56px; }
+      .hero-names { flex-direction: column; align-items: center; gap: 0; }
+      .partner-name { font-size: clamp(52px, 16vw, 72px); }
+      .hero-ampersand { font-size: clamp(38px, 12vw, 56px); padding: 0; line-height: 1.1; }
+      .hero-details { flex-direction: column; width: 100%; max-width: 300px; margin-top: 32px; }
+      .hero-detail-block:not(:last-child)::after { top: auto; right: 20%; bottom: 0; left: 20%; width: 60%; height: 1px; }
+      #countdown-timer { gap: 10px; }
+      .time-box { min-width: 70px; padding: 15px 10px; }
+      .time-box span { font-size: 24px; }
+      .music-btn { bottom: 20px; right: 20px; width: 45px; height: 45px; }
+      .music-btn svg { width: 20px; height: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="splash">
+    <video id="splashVideo" autoplay muted playsinline preload="auto" poster="poster.jpg">
+      <source src="splash.mp4" type="video/mp4" />
+    </video>
+    <div class="splash-content">
+      <div class="splash-divider">
+      </div>
+    </div>
+  </div>
+
+  <audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg" />
+  </audio>
+
+  <button id="music-toggle" class="music-btn" aria-label="Toggle Music">
+    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+  </button>
+
+  <div id="main">
+
+    <section id="hero">
+      <p class="hero-eyebrow">We are getting married!</p>
+      <div class="hero-rule">
+        <span></span><i>✦ ✦ ✦</i><span></span>
+      </div>
+
+      <div class="hero-names">
+        <div class="partner-name">Nana</div>
+        <div class="hero-ampersand">&</div>
+        <div class="partner-name">Sheila</div>
+      </div>
+
+      <div class="hero-event-type">Save the Date</div>
+
+      <div class="hero-details">
+        <div class="hero-detail-block">
+          <div class="label">Date</div>
+          <div class="value">Sept 26, 2026</div>
+        </div>
+        <div class="hero-detail-block">
+          <div class="label">Venue</div>
+          <div class="value">La Fontaine</div>
+        </div>
+      </div>
+
+      <div id="countdown-timer" class="reveal reveal-d3">
+        <div class="time-box">
+          <span id="days">00</span>
+          <p>Days</p>
+        </div>
+        <div class="time-box">
+          <span id="hours">00</span>
+          <p>Hours</p>
+        </div>
+        <div class="time-box">
+          <span id="minutes">00</span>
+          <p>Mins</p>
+        </div>
+        <div class="time-box">
+          <span id="seconds">00</span>
+          <p>Secs</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="our-story" class="section-wrapper bg-alt">
+      <p class="section-label reveal">How it started</p>
+      <h2 class="section-title reveal reveal-d1">Our Story</h2>
+      <div class="section-rule reveal reveal-d2"></div>
+      
+      <p class="story-text reveal reveal-d3">
+        It all started with a simple moment that neither of us expected would change everything. What began as friendship quickly grew into something we couldn’t ignore.
+        <br><br>
+        From our first date, we were drawn to each other’s laughter, kindness and curiosity; traveling across continents just to be together. Over time, that connection became a partnership built on love, trust and laughter. 
+        <br><br>
+        Now, we are so excited to begin this next chapter and celebrate with the people we love most.
+      </p>
+    </section>
+
+    <section id="getting-there" class="section-wrapper">
+      <p class="section-label reveal">Travel Information</p>
+      <h2 class="section-title reveal reveal-d1">Getting There</h2>
+      <div class="section-rule reveal reveal-d2"></div>
+      
+      <div class="info-grid reveal reveal-d3">
+        <div class="info-card">
+          <h3>By Air</h3>
+          <p>The closest airports are JFK, LaGuardia (LGA), and Newark (EWR). The Bronx is easily accessible from all three via taxi or rideshare.</p>
+        </div>
+        <div class="info-card">
+          <h3>Getting Around</h3>
+          <p>Rideshare services are readily available throughout the city. Limited on-site parking may be available - details to follow.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="accommodations" class="section-wrapper bg-alt">
+      <p class="section-label reveal">Plan Your Visit</p>
+      <h2 class="section-title reveal reveal-d1">Travel & Accommodations</h2>
+      <div class="section-rule reveal reveal-d2"></div>
+
+      <p class="info-text reveal">
+        For our out-of-town guests, we have listed several nearby hotel options that are convenient to the venue. We encourage guests to book early to ensure availability for our wedding weekend.
+      </p>
+
+
+
+      <div class="venue-card reveal">
+        <h3 style="font-family: 'Bodoni Moda', serif; font-size: 26px; color: var(--text-main);">La Fontaine Location</h3>
+        <iframe 
+          class="map-embed" 
+          src="https://maps.google.com/maps?q=La+Fontaine&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+          allowfullscreen="" 
+          loading="lazy">
+        </iframe>
+      </div>
+    </section>
+
+    <section id="rsvp" class="section-wrapper">
+      <p class="section-label reveal">Let us know</p>
+      <h2 class="section-title reveal reveal-d1">RSVP</h2>
+      <div class="section-rule reveal reveal-d2"></div>
+
+      <div class="rsvp-btn-container reveal reveal-d3">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfDoK7J_kbv0ra7pbtQvB89LPaJm1vwtpIKJFrzYp0AJU0O7Q/viewform?usp=header" target="_blank" class="rsvp-btn">
+          Click Here to RSVP
+        </a>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-rule"></div>
+      Formal invitation to follow<br/>
+      Nana & Sheila<br><br>
+      <span class="credits">Website made by <a href="https://www.fiverr.com/s/6YkX66R" target="_blank">AUF production</a></span>
+    </footer>
+
+  </div>
+
+  <script>
+    // ── SPLASH ──
+    const splashVideo = document.getElementById('splashVideo');
+    const splash      = document.getElementById('splash');
+    const musicBtn    = document.getElementById('music-toggle');
+    const music       = document.getElementById('bgMusic');
+    
+    let playing   = false;
+    let dismissed = false;
+    let isMusicPlaying = false;
+
+    // SVG Icons for Audio Button
+    const playIcon  = '<path d="M8 5v14l11-7z"/>';
+    const pauseIcon = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+
+    document.body.classList.add('splash-active');
+
+    splashVideo.addEventListener('canplay', function() {
+      if (!playing) {
+        splashVideo.currentTime = 0;
+        splashVideo.pause();
+      }
+    }, { once: true });
+
+    function dismiss() {
+      if (dismissed) return;
+      dismissed = true;
+      splashVideo.pause();
+      splash.style.transition = 'none';
+      splash.classList.add('hidden');
+      document.body.classList.remove('splash-active');
+      musicBtn.classList.add('visible'); // Show music control button
+      tryPlayMusic();
+    }
+
+    function startVideo() {
+      if (playing) return;
+      playing = true;
+      splashVideo.currentTime = 0; 
+      splashVideo.play().catch(() => dismiss());
+    }
+
+    splashVideo.addEventListener('ended', dismiss);
+    splashVideo.addEventListener('error', () => setTimeout(dismiss, 400));
+    splash.addEventListener('click', startVideo);
+    splash.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      startVideo();
+    }, { passive: false });
+
+    // ── MUSIC LOGIC ──
+    function setPlayState(playingState) {
+      isMusicPlaying = playingState;
+      if (isMusicPlaying) {
+        musicBtn.innerHTML = `<svg viewBox="0 0 24 24">${pauseIcon}</svg>`;
+      } else {
+        musicBtn.innerHTML = `<svg viewBox="0 0 24 24">${playIcon}</svg>`;
+      }
+    }
+
+    function tryPlayMusic() {
+      music.volume = 0.3;
+      music.play().then(() => {
+        setPlayState(true);
+      }).catch(() => {
+        setPlayState(false);
+      });
+    }
+
+    musicBtn.addEventListener('click', () => {
+      if (isMusicPlaying) {
+        music.pause();
+        setPlayState(false);
+      } else {
+        music.play();
+        setPlayState(true);
+      }
+    });
+
+    // ── COUNTDOWN TIMER ──
+    const countdownDate = new Date("Sep 26, 2026 00:00:00").getTime();
+    
+    const timerInterval = setInterval(function() {
+      const now = new Date().getTime();
+      const distance = countdownDate - now;
+        
+      if (distance < 0) {
+        clearInterval(timerInterval);
+        document.getElementById("days").innerText = "00";
+        document.getElementById("hours").innerText = "00";
+        document.getElementById("minutes").innerText = "00";
+        document.getElementById("seconds").innerText = "00";
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById("days").innerText = days.toString().padStart(2, '0');
+      document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
+      document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
+      document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
+    }, 1000);
+
+    // ── SCROLL REVEAL ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
