@@ -144,6 +144,7 @@
     .menu-toggle.active span:nth-child(3) {
       transform: rotate(-45deg) translate(6px, -6px);
     }
+
       /* ── SPLASH ── */
     body.splash-active { overflow: hidden; }
 
@@ -214,8 +215,6 @@
       opacity: 0.8;
     }
     .splash-divider i { color: var(--primary); font-style: normal; font-size: 9px; }
-
-    
 
     /* ── MODERN MINIMALIST MUSIC BUTTON ── */
     .music-btn {
@@ -328,16 +327,13 @@
     #main {
       min-height: 100vh;
       position: relative;
-      /* Optional background image - will gracefully degrade if missing */
       background: var(--bg);
     }
     
-    /* Only apply background image if it exists */
     #main.has-bg-image {
       background: url('background.jpg') center center / cover fixed, var(--bg);
     }
     
-    /* Overlay to ensure text visibility */
     #main::before {
       content: '';
       position: fixed;
@@ -497,6 +493,13 @@
       color: var(--text-main);
       letter-spacing: 0.04em;
     }
+    
+    .time-value {
+      font-size: 0.8em;
+      opacity: 0.9;
+      display: block;
+      margin-top: 4px;
+    }
 
     /* ── COUNTDOWN ── */
     #countdown-timer {
@@ -613,6 +616,71 @@
       font-size: clamp(13px, 2vw, 14px);
       line-height: 1.6;
       color: var(--text-soft);
+    }
+
+    /* ── FAQ ACCORDION ── */
+    .faq-container {
+      max-width: 800px;
+      margin: 40px auto 0;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .faq-item {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    }
+    
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      padding: clamp(18px, 3vw, 24px) clamp(20px, 4vw, 30px);
+      background: none;
+      border: none;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(18px, 2.5vw, 22px);
+      color: var(--text-main);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.3s ease;
+    }
+    
+    .faq-question:hover {
+      background: rgba(255, 218, 225, 0.2); /* Soft accent */
+    }
+    
+    .faq-icon {
+      width: 20px;
+      height: 20px;
+      fill: var(--text-soft);
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+      margin-left: 15px;
+    }
+    
+    .faq-item.active .faq-icon {
+      transform: rotate(180deg);
+    }
+    
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+    
+    .faq-answer p {
+      padding: 0 clamp(20px, 4vw, 30px) clamp(18px, 3vw, 24px);
+      font-family: 'Raleway', sans-serif;
+      font-size: clamp(14px, 2vw, 15px);
+      line-height: 1.6;
+      color: var(--text-soft);
+      margin: 0;
     }
 
     /* ── VENUE MAP CARD ── */
@@ -879,7 +947,6 @@
 </head>
 <body>
 
-  <!-- Navigation Header -->
   <nav class="nav-header" id="navHeader">
     <div class="nav-container">
       <a href="#hero" class="nav-logo">N & S</a>
@@ -891,15 +958,15 @@
       <ul class="nav-menu" id="navMenu">
         <li><a href="#our-story">Our Story</a></li>
         <li><a href="#accommodations">Travel & Stay</a></li>
+        <li><a href="#faq">FAQ</a></li>
         <li><a href="#rsvp">RSVP</a></li>
       </ul>
     </div>
   </nav>
 
-  <!-- Splash Screen -->
-   <div id="splash">
+  <div id="splash">
     <video id="splashVideo" autoplay muted playsinline preload="auto" poster="poster.jpg">
-      <source src="splash.MP4" type="video/mp4" />
+      <source src="splash.mp4" type="video/mp4" />
     </video>
     <div class="splash-content">
       <div class="splash-divider">
@@ -907,12 +974,10 @@
     </div>
   </div>
 
-  <!-- Background Music -->
   <audio id="bgMusic" loop>
     <source src="music.mp3" type="audio/mpeg" />
   </audio>
 
-  <!-- Modern Music Toggle Button -->
   <button id="music-toggle" class="music-btn paused" aria-label="Toggle Music">
     <div class="music-icon">
       <div class="sound-wave">
@@ -925,7 +990,6 @@
     </div>
   </button>
 
-  <!-- Main Content -->
   <div id="main">
 
     <section id="hero">
@@ -944,8 +1008,8 @@
 
       <div class="hero-details">
         <div class="hero-detail-block">
-          <div class="label">Date</div>
-          <div class="value">Sept 26, 2026</div>
+          <div class="label">Date & Time</div>
+          <div class="value">Sept 26, 2026<span class="time-value">2:00 PM</span></div>
         </div>
         <div class="hero-detail-block">
           <div class="label">Venue</div>
@@ -1024,7 +1088,61 @@
       </div>
     </section>
 
-    <section id="rsvp" class="section-wrapper">
+    <section id="faq" class="section-wrapper">
+      <p class="section-label reveal">Questions & Answers</p>
+      <h2 class="section-title reveal reveal-d1">Frequently Asked</h2>
+      <div class="section-rule reveal reveal-d2"></div>
+
+      <p class="info-text reveal reveal-d3">
+        Here are answers to some common questions about our special day. Feel free to reach out if you need anything else!
+      </p>
+
+      <div class="faq-container reveal reveal-d3">
+        
+        <div class="faq-item">
+          <button class="faq-question">
+            What is the dress code?
+            <svg class="faq-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </button>
+          <div class="faq-answer">
+            <p>Kente / African Wear / Any white outfit</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            Can I bring a plus one?
+            <svg class="faq-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </button>
+          <div class="faq-answer">
+            <p>Yes, you can bring a plus one. Kindly have them RSVP so we can make accommodations for them.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            Are children welcome?
+            <svg class="faq-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </button>
+          <div class="faq-answer">
+            <p>Children are warmly welcomed to join us.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            Will there be parking available?
+            <svg class="faq-icon" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+          </button>
+          <div class="faq-answer">
+            <p>Yes, parking is readily available.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="rsvp" class="section-wrapper bg-alt">
       <p class="section-label reveal">Let us know</p>
       <h2 class="section-title reveal reveal-d1">RSVP</h2>
       <div class="section-rule reveal reveal-d2"></div>
@@ -1199,6 +1317,28 @@
     
     updateCountdown();
     setInterval(updateCountdown, 1000);
+
+    // ── FAQ ACCORDION LOGIC ──
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+      const question = item.querySelector('.faq-question');
+      question.addEventListener('click', () => {
+        const isActive = item.classList.contains('active');
+        
+        // Close all items first
+        faqItems.forEach(i => {
+          i.classList.remove('active');
+          i.querySelector('.faq-answer').style.maxHeight = null;
+        });
+        
+        // If the clicked item wasn't active, open it
+        if (!isActive) {
+          item.classList.add('active');
+          const answer = item.querySelector('.faq-answer');
+          answer.style.maxHeight = answer.scrollHeight + "px";
+        }
+      });
+    });
 
     // ── SCROLL REVEAL ──
     const observer = new IntersectionObserver((entries) => {
