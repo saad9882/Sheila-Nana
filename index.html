@@ -324,16 +324,11 @@
     }
 
     /* ── MAIN ── */
-    #main {
+#main {
       min-height: 100vh;
+      background: url('background.jpg') center top / cover fixed;
       position: relative;
-      background: var(--bg);
-    }
-    
-    #main.has-bg-image {
-      background: url('background.jpg') center center / cover fixed, var(--bg);
-    }
-    
+}
     #main::before {
       content: '';
       position: fixed;
@@ -990,7 +985,8 @@
     </div>
   </button>
 
-  <div id="main" class="has-bg-image">
+  <!-- MAIN -->
+  <div id="main">
 
     <section id="hero">
       <p class="hero-eyebrow">We are getting married!</p>
@@ -1009,14 +1005,11 @@
       <div class="hero-details">
         <div class="hero-detail-block">
           <div class="label">Date & Time</div>
-          <div class="value">Sept 26, 2026
-            <div class="label">Saturday</div>
-            <span class="time-value">2:00 PM</span></div>
-    
+          <div class="value">Sept 26, 2026<span class="time-value">2:00 PM</span></div>
         </div>
         <div class="hero-detail-block">
           <div class="label">Venue</div>
-          <div class="value">La Fontaine Event Center-Ramsey, MN</div>
+          <div class="value">La Fontaine</div>
         </div>
       </div>
 
@@ -1062,7 +1055,7 @@
       <div class="info-grid reveal reveal-d3">
         <div class="info-card">
           <h3>By Air</h3>
-          <p>Minneapolis–Saint Paul International Airport (MSP) is the closest airport serving the Minneapolis area. The venue is approximately a 45-minute drive from the airport</p>
+          <p>The closest airports are JFK, LaGuardia (LGA), and Newark (EWR). The Bronx is easily accessible from all three via taxi or rideshare.</p>
         </div>
         <div class="info-card">
           <h3>Getting Around</h3>
